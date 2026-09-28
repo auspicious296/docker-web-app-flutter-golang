@@ -1,0 +1,51 @@
+# 開発環境専用の設定（ADR 0014）
+#
+# Docker Compose は、-f でファイルを指定せずに `docker compose up -d` を実行したときだけ、
+# compose.yaml に加えてこのファイルを自動で読む。本番の起動コマンド
+# （docker compose -f compose.yaml -f compose.prod.yaml up -d）では読まれないため、
+# ここに書いた処理は本番では実行されない。
+#
+# 本番で -f を付けずに起動すると、このファイルが読まれ、本番にもテスト用 DB が
+# 作られるため注意すること。
+
+services:
+  # テスト用 DB（<POSTGRES_DB>_test）がなければ作成する。すでにあれば何もしない。
+  # PostgreSQL の初期化スクリプトはボリュームが空のとき（最初の 1 回）にしか動かないため、
+  # 起動のたびに動く、1 回だけ実行して終わるサービスとして書く。
+  db-test-init:
+    image: postgres:18.6-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      TEST_DB: ${POSTGRES_DB}_test
+    # CREATE DATABASE には IF NOT EXISTS がないため、pg_database を見てから作成する。
+    # $$ は Compose の変数展開を避け、コンテナのシェルに $ を渡すための書き方。
+    command:
+      - sh
+      - -c
+      - >-
+        psql -tAc "SELECT 1 FROM pg_database WHERE datname = '$${TEST_DB}'" | grep -q 1
+        || psql -c "CREATE DATABASE \"$${TEST_DB}\""
+    restart: "no"
+
+  # テスト用 DB にマイグレーションを適用する。適用済みのものは飛ばすため、何度実行してもよい。
+  # 新しいマイグレーションを追加したら、docker compose up -d を実行し直すと反映される。
+  db-test-migrate:
+    image: migrate/migrate:v4.20.1
+    depends_on:
+      db-test-init:
+        condition: service_completed_successfully
+    volumes:
+      - ./backend/migrations:/migrations:ro
+    command:
+      - -path
+      - /migrations
+      - -database
+      - postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}_test?sslmode=disable
+      - up
+    restart: "no"

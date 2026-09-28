@@ -1,0 +1,18 @@
+# Flutter / Dart
+build/
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+**/*.g.dart
+**/*.freezed.dart
+coverage/
+ios/Pods/
+android/.gradle/
+android/local.properties
+
+# FVM Version Cache
+.fvm/

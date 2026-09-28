@@ -1,0 +1,22 @@
+# data_table_2 2.8.0 を取り込んで改変したもの（オリジナルは BSD-3-Clause / LICENSE を参照）。
+#
+# 改変は lib/src/data_table_2.dart の 1 か所のみ。詳細と経緯は
+# docs/adr/0007-vendoring-data-table-2.md を参照。
+#
+# 取り込んだのは lib/ と LICENSE、CHANGELOG.md だけで、example / screenshots /
+# test は含めていない。それに合わせて screenshots と dev_dependencies の記述も
+# 削除している（path 依存として解決されるのは dependencies だけのため）。
+name: data_table_2
+description: In-place substitute for Flutter's DataTable and PaginatedDataTable with fixed/sticky headers and few extra features
+version: 2.8.0
+homepage: https://github.com/maxim-saplin/data_table_2
+repository: https://github.com/maxim-saplin/data_table_2
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  async: ^2.13.0
