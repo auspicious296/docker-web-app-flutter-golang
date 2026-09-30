@@ -20,16 +20,19 @@ Flutter（フロントエンド）と GO（バックエンド API）を連携さ
 
 ### 開発環境のセットアップ手順（macOS 向け）
 
-プロジェクトにアサインされたら、以下の番号順に手順書に従って開発環境の設定を行ってください。
+プロジェクトにアサインされたら、Claude Code で**スラッシュコマンド `/guided-setup` を実行してください。** 以下の手順書 1〜5 に沿って、ブラウザで `https://myapp.local` のアプリの画面が表示されるまでナビゲートされます。全自動のセットアップではなく、何をどう設定したのかを理解できるよう、コマンドはご自身で打つ形で進みます。
 
-いずれも初めて触る方を対象に、手順を先に簡潔に記載し、その後に「なぜその操作が必要なのか」の解説を付けた構成になっています。
+`guided-setup` は、「環境構築を手伝って」のような通常の依頼では起動しません。必ずスラッシュコマンドで実行してください。
 
-1〜3 は互いに依存しないため、順不同で実施して構いません。4 は最後の動作確認でコンテナを起動するため、必ず 1（Docker）の完了後に実施してください。
+細かなセットアップ内容を確認したい場合は、以下の手順書を参照してください。いずれも初めて触る方を対象に、手順を先に簡潔に記載し、その後に「なぜその操作が必要なのか」の解説を付けた構成になっています。
 
-1. [docker-setup-guide-for-mac.md](docs/docker-setup-guide-for-mac.md) — Colima を利用した Docker / Docker Compose のインストール手順（Docker Desktop は使用しません）。
+1〜4 は互いに依存しないため、順不同で実施して構いません。5 はアプリを起動して表示を確認するため、必ず 1〜4 の完了後に実施してください。
+
+1. [docker-setup-guide-for-mac.md](docs/docker-setup-guide-for-mac.md) — Homebrew と、Colima を利用した Docker / Docker Compose のインストール手順（Docker Desktop は使用しません）。
 2. [golang-setup-guide-for-mac.md](docs/golang-setup-guide-for-mac.md) — Go のインストール手順。
 3. [flutter-setup-guide-for-mac.md](docs/flutter-setup-guide-for-mac.md) — FVM および Flutter SDK のインストール手順。
 4. [local-https-setup-guide-for-mac.md](docs/local-https-setup-guide-for-mac.md) — ローカル HTTPS 用の証明書の作成と、カスタムドメイン（`myapp.local`）を `/etc/hosts` に登録する手順。
+5. [app-launch-guide-for-mac.md](docs/app-launch-guide-for-mac.md) — `.env` の作成、フロントエンドのビルド、コンテナの起動を行い、ブラウザで `https://myapp.local` のアプリの画面を表示するまでの手順。
 
 ### 設計判断の記録
 

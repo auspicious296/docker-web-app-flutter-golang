@@ -6,7 +6,6 @@ HTTPS や証明書を初めて扱う方を対象としています。
 - 対象 OS: macOS（Apple Silicon / Intel 共通）
 - 対象シェル: zsh（macOS の標準シェル）
 - インストールするもの: mkcert（ローカル開発用の証明書作成ツール）
-- 前提: [docker-setup-guide-for-mac.md](docker-setup-guide-for-mac.md) の手順が完了していること
 
 以降のコマンドは、特に記載がない限り**プロジェクトのルートディレクトリ**で実行します。
 
@@ -34,6 +33,19 @@ brew install mkcert
 ```
 
 ### 手順 2. ローカル認証局を Mac に登録する
+
+ローカル認証局がすでに登録されているか確認します。
+
+```bash
+security find-certificate -c mkcert /Library/Keychains/System.keychain
+```
+
+**表示結果による分岐**
+
+| 表示結果 | 対応 |
+|---|---|
+| `keychain: "/Library/Keychains/System.keychain"` から始まる情報が表示される | 登録済みです。手順 3 へ進んでください |
+| `The specified item could not be found in the keychain.` を含むエラーが表示される | 下記のコマンドで登録してください |
 
 ```bash
 mkcert -install
@@ -95,47 +107,7 @@ Mac が保持している名前解決のキャッシュをクリアします。
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
-### 手順 5. 動作確認する
-
-環境変数のファイル `.env` がまだない場合は、雛形からコピーして作成し、CSRF 対策の署名に使う秘密鍵（`CSRF_SIGNING_KEY`）を書き込みます。
-
-```bash
-cp .env.example .env
-grep -q '^CSRF_SIGNING_KEY=' .env || echo 'CSRF_SIGNING_KEY=' >> .env
-sed -i '' "s/^CSRF_SIGNING_KEY=.*/CSRF_SIGNING_KEY=$(openssl rand -hex 32)/" .env
-```
-
-秘密鍵が書き込まれたことを確認します。
-
-```bash
-grep '^CSRF_SIGNING_KEY=' .env
-```
-
-`CSRF_SIGNING_KEY=` の後ろに 64 文字の英数字が続いていれば成功です。値は人によって異なります。
-
-Colima が起動していない場合は、先に起動します。
-
-```bash
-colima start
-```
-
-コンテナを起動します。
-
-```bash
-docker compose up -d
-```
-
-API にアクセスします。
-
-```bash
-curl https://myapp.local/api/health
-```
-
-```
-{"status":"ok"}
-```
-
-上記が表示されればセットアップ完了です。証明書の警告が出ず、`https://myapp.local` の nginx を経由して Go API に到達できています。
+以上でセットアップ完了です。証明書とドメインが実際に使えるかどうかは、[app-launch-guide-for-mac.md](app-launch-guide-for-mac.md) でアプリを起動して確認します。
 
 ---
 
@@ -208,51 +180,3 @@ Mac が認証局を信頼しているため、その認証局が発行した証�
 **キャッシュをクリアする理由**
 
 macOS は一度調べた名前解決の結果をしばらく記憶しています。`/etc/hosts` を書き換えても、古い結果が残っていると反映されないため、手順 4 の最後でキャッシュをクリアしています。
-
-### 手順 5 ─ `CSRF_SIGNING_KEY` とは何か、Git で管理しない理由
-
-`CSRF_SIGNING_KEY` は、API がログイン前の CSRF トークン（罠サイトからログインさせられる攻撃を防ぐための値）に署名するときに使う秘密鍵です。API は、ブラウザから送られてきたトークンがこの秘密鍵で署名されたものかどうかを確かめ、署名が合わなければログインを受け付けません。決定の経緯は [ADR 0012](adr/0012-session-based-authentication.md) を参照してください。
-
-手順 5 の 3 つのコマンドは、それぞれ次のことを行っています。
-
-| コマンド | 行うこと |
-|---|---|
-| `cp .env.example .env` | 雛形をコピーして `.env` を作る |
-| `grep -q ... \|\| echo ...` | `.env` に `CSRF_SIGNING_KEY=` の行がなければ、空の行を追加する |
-| `sed -i '' "s/.../$(openssl rand -hex 32)/" .env` | `openssl rand -hex 32` で推測できないランダムな値（32 バイト = 英数字 64 文字）を作り、`CSRF_SIGNING_KEY=` の行に書き込む |
-
-**Git で管理しない理由**
-
-秘密鍵が漏れると、攻撃者がログイン前の CSRF トークンを自由に作れるようになり、この対策が意味をなさなくなります。`.env` は `.gitignore` により Git の管理対象外になっているため、DB のパスワードと同じく、各自の Mac の中だけに置かれます。雛形の `.env.example` には値を書かず、各自がコマンドで作ります。
-
-**値を作り直した場合**
-
-手順 5 のコマンドを再度実行すると、秘密鍵は別の値に変わります。影響を受けるのは、そのときログイン画面を開いていた人のログイン前の CSRF トークンだけで、ログイン画面を開き直せば元どおりログインできます。ログイン済みのセッションは秘密鍵を使っていないため、影響を受けません。
-
-### 手順 5 ─ nginx と API の間はなぜ HTTP なのか
-
-HTTPS の暗号化が必要なのは、ブラウザから nginx までの通信です。nginx で復号した後、nginx から Go API への転送は Docker 内部のネットワークだけで行われ、外部からは見えません。そのため、API 側は HTTP のまま動かし、証明書の管理を nginx の 1 か所に集約しています。このように、HTTPS の復号を手前のサーバーで引き受ける構成を **HTTPS 終端**と呼びます。
-
-### 補足 ─ よくあるエラーと対処
-
-**`curl: (6) Could not resolve host: myapp.local`**
-
-`/etc/hosts` の登録が反映されていません。手順 4 の `grep` で登録内容を確認し、キャッシュのクリアを再度実行してください。
-
-**`curl: (60) SSL certificate problem`、またはブラウザで証明書の警告が表示される**
-
-ローカル認証局が Mac に登録されていません。手順 2 の `mkcert -install` を再度実行してください。
-
-**`curl: (7) Failed to connect to myapp.local port 443`**
-
-nginx コンテナが起動していません。以下でコンテナの状態を確認してください。
-
-```bash
-docker compose ps
-```
-
-nginx が起動していない場合は、以下でエラーの内容を確認します。証明書のファイルが見つからないという内容（`cannot load certificate`）であれば、手順 3 のファイル名と保存場所を確認してください。
-
-```bash
-docker compose logs nginx
-```

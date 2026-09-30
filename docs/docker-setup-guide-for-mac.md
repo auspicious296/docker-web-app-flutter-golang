@@ -59,14 +59,62 @@ docker info
 | `docker compose version` または `docker buildx version` で `docker: unknown command` と表示される | Compose または Buildx が未導入、または未登録 | 手順 2 へ進んでください |
 | 上 4 つは表示されるが `docker info` でエラー | インストール済み・未起動 | 手順 4 へ進んでください |
 
-### 手順 1. Homebrew があるか確認する
+### 手順 1. Homebrew を用意する
+
+Homebrew があるか確認します。
 
 ```bash
 brew --version
 ```
 
-バージョンが表示されれば準備完了です。
-`command not found` の場合は、先に [Homebrew 公式サイト](https://brew.sh/ja/) の手順でインストールしてください。
+**表示結果による分岐**
+
+| 表示結果 | 対応 |
+|---|---|
+| `Homebrew` から始まるバージョンが表示される | インストール済みです。手順 2 へ進んでください |
+| `zsh: command not found: brew` と表示される | 未インストールです。下記の「Homebrew をインストールする」を実行してください |
+
+**Homebrew をインストールする**
+
+以下を実行します（[Homebrew 公式サイト](https://brew.sh/ja/) に掲載されているコマンドと同じものです）。
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+途中で macOS の管理者パスワードの入力と、`Press RETURN/ENTER to continue` の表示に対する `Enter` キーの入力を求められます。Xcode コマンドラインツールが入っていない Mac では、そのインストールも自動で行われるため、10 分ほどかかることがあります。
+
+最後に以下のように表示されればインストール完了です。
+
+```
+==> Installation successful!
+```
+
+**Apple Silicon の Mac では「Next steps」のコマンドを実行する**
+
+インストールの最後に表示される `==> Next steps:` の下に、`brew` コマンドを使えるようにするためのコマンドが表示されます。**表示されたコマンドを、上から順にすべて実行してください。** 多くの場合、以下の 3 つです。
+
+```bash
+echo >> ~/.zprofile
+```
+
+```bash
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+```
+
+```bash
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+Intel の Mac では「Next steps」にこれらのコマンドは表示されず、実行も不要です。
+
+**インストールできたか確認する**
+
+```bash
+brew --version
+```
+
+`Homebrew` から始まるバージョンが表示されれば成功です。
 
 ### 手順 2. Colima と Docker 関連のコマンドをインストールする
 
@@ -173,6 +221,19 @@ docker buildx version
 どちらもバージョンが表示されれば成功です。
 
 ### 手順 4. Colima を起動する
+
+Colima が起動しているか確認します。
+
+```bash
+colima status
+```
+
+**表示結果による分岐**
+
+| 表示結果 | 対応 |
+|---|---|
+| `colima is running` と表示される | 起動済みです。手順 5 へ進んでください |
+| `colima is not running` と表示される | 下記のコマンドで起動してください |
 
 ```bash
 colima start
@@ -290,6 +351,24 @@ failed to connect to the docker API at unix:///Users/ユーザー名/.colima/def
 ```
 
 このエラーは「インストールされていない」のではなく「**起動していない**」という意味です。初心者がつまずきやすい箇所なので、確認段階で切り分けておきます。
+
+### 手順 1 ─ Homebrew とは何か、なぜ「Next steps」が必要なのか
+
+Homebrew は、macOS にコマンドラインのツールをインストールするための**パッケージ管理ツール**です。本プロジェクトで使う Colima・Docker・Go・FVM・mkcert は、いずれも `brew install` でインストールします。インストール・更新・削除の方法がすべてのツールで同じになるため、管理が楽になります。
+
+**Apple Silicon の Mac で「Next steps」が必要な理由**
+
+Homebrew は、Apple Silicon の Mac では `/opt/homebrew` に、Intel の Mac では `/usr/local` にインストールされます。ターミナルは PATH に登録された場所からしかコマンドを探しませんが、`/usr/local/bin` は最初から PATH に入っている一方で、`/opt/homebrew/bin` は入っていません。そのため Apple Silicon の Mac では、PATH に追加しないと `brew` コマンドが見つかりません。
+
+「Next steps」の 3 つのコマンドは、それぞれ次のことを行っています。
+
+| コマンド | 行うこと |
+|---|---|
+| `echo >> ~/.zprofile` | 設定ファイル `~/.zprofile` の末尾に空行を追加する（既存の内容と区切るため） |
+| `echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile` | ターミナルを開くたびに Homebrew の PATH などを設定する 1 行を、`~/.zprofile` に追記する |
+| `eval "$(/opt/homebrew/bin/brew shellenv)"` | 上の 1 行の設定を、いま開いているターミナルにも反映させる |
+
+`~/.zprofile` は、ターミナルを開いたとき（ログイン時）に読み込まれる設定ファイルです。ここに書いておくことで、次からはターミナルを開くだけで `brew` コマンドが使えるようになります。
 
 ### 手順 2 ─ Colima と各コマンドの役割
 
