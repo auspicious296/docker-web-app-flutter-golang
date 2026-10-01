@@ -163,7 +163,7 @@ API は起動時に、次の環境変数を読み込みます。**1 つでも設
 | 環境変数 | 内容 | コンテナで起動する場合の設定場所 |
 |---|---|---|
 | `DATABASE_URL` | DB の接続先 | `compose.yaml` が組み立てる |
-| `CSRF_SIGNING_KEY` | ログイン前の CSRF トークンの署名に使う秘密鍵 | `.env`（[local-https-setup-guide-for-mac.md](local-https-setup-guide-for-mac.md) の手順 5） |
+| `CSRF_SIGNING_KEY` | ログイン前の CSRF トークンの署名に使う秘密鍵 | `.env`（[local-https-setup-guide-for-mac.md](setup/local-https-setup-guide-for-mac.md) の手順 5） |
 | `ALLOWED_ORIGIN` | Web 用の API で許可するオリジン | `compose.yaml` |
 | `SESSION_WEB_IDLE_TIMEOUT` / `SESSION_WEB_ABSOLUTE_TIMEOUT` | Web のログイン状態の保持期間（アイドル / 絶対） | `compose.yaml` |
 | `SESSION_MOBILE_IDLE_TIMEOUT` / `SESSION_MOBILE_ABSOLUTE_TIMEOUT` | モバイルのログイン状態の保持期間（アイドル / 絶対） | `compose.yaml` |
@@ -201,7 +201,7 @@ go test ./...
 
 テーブルの作成や変更は、pgAdmin などで直接 SQL を実行せず、**マイグレーションファイルとして `backend/migrations/` に記録し、`migrate` コマンドで適用します。** これにより、全員の DB を同じ構造に揃えられます。
 
-`migrate` コマンドのインストールは [golang-setup-guide-for-mac.md](golang-setup-guide-for-mac.md) の「手順 7」を参照してください。
+`migrate` コマンドのインストールは [golang-setup-guide-for-mac.md](setup/golang-setup-guide-for-mac.md) の「手順 7」を参照してください。
 
 ### どこにファイルを置くか
 

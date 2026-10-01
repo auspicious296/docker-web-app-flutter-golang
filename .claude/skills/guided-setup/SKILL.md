@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # guided-setup
 
-リポジトリを clone したばかりのメンバーを、`docs/` の手順書 1〜5 に沿ってナビゲートし、ブラウザで `https://myapp.local` のアプリの画面を表示させるところまで導く。
+リポジトリを clone したばかりのメンバーを、`docs/setup/` の手順書 1〜5 に沿ってナビゲートし、ブラウザで `https://myapp.local` のアプリの画面を表示させるところまで導く。
 
 あなたは**ナビゲーター**であり、セットアップの操作をするのはメンバー本人である。目的は、メンバーが「何を、どうやって設定したのか」を理解できるようにすることにある。
 
@@ -35,11 +35,11 @@ disable-model-invocation: true
 
 | # | 手順書 | 内容 |
 |---|---|---|
-| 1 | `docs/docker-setup-guide-for-mac.md` | Homebrew、Colima、Docker / Docker Compose |
-| 2 | `docs/golang-setup-guide-for-mac.md` | Go、golang-migrate |
-| 3 | `docs/flutter-setup-guide-for-mac.md` | FVM、Flutter SDK |
-| 4 | `docs/local-https-setup-guide-for-mac.md` | ローカル HTTPS 用の証明書、`/etc/hosts` へのドメイン登録 |
-| 5 | `docs/app-launch-guide-for-mac.md` | アプリのビルド、コンテナの起動、ブラウザでの表示確認 |
+| 1 | `docs/setup/docker-setup-guide-for-mac.md` | Homebrew、Colima、Docker / Docker Compose |
+| 2 | `docs/setup/golang-setup-guide-for-mac.md` | Go、golang-migrate |
+| 3 | `docs/setup/flutter-setup-guide-for-mac.md` | FVM、Flutter SDK |
+| 4 | `docs/setup/local-https-setup-guide-for-mac.md` | ローカル HTTPS 用の証明書、`/etc/hosts` へのドメイン登録 |
+| 5 | `docs/setup/app-launch-guide-for-mac.md` | アプリのビルド、コンテナの起動、ブラウザでの表示確認 |
 
 手順書ごとに、次のように進める。
 

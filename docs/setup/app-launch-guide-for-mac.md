@@ -295,7 +295,7 @@ curl -s https://myapp.local/api/users
 
 **`CSRF_SIGNING_KEY` の役割**
 
-`CSRF_SIGNING_KEY` は、API がログイン前の CSRF トークン（罠サイトからログインさせられる攻撃を防ぐための値）に署名するときに使う秘密鍵です。API は、ブラウザから送られてきたトークンがこの秘密鍵で署名されたものかどうかを確かめ、署名が合わなければログインを受け付けません。決定の経緯は [ADR 0012](adr/0012-session-based-authentication.md) を参照してください。
+`CSRF_SIGNING_KEY` は、API がログイン前の CSRF トークン（罠サイトからログインさせられる攻撃を防ぐための値）に署名するときに使う秘密鍵です。API は、ブラウザから送られてきたトークンがこの秘密鍵で署名されたものかどうかを確かめ、署名が合わなければログインを受け付けません。決定の経緯は [ADR 0012](../adr/0012-session-based-authentication.md) を参照してください。
 
 手順 2 の 2 つのコマンドは、それぞれ次のことを行っています。
 
@@ -326,7 +326,7 @@ curl -s https://myapp.local/api/users
 
 **コード生成が必要な理由**
 
-本プロジェクトは、状態管理（Riverpod）やデータクラス（freezed）のコードの一部を、手で書かずに `build_runner` で生成しています。生成されたファイルは Git の管理対象外のため、clone した直後は存在せず、そのままでは手順 5 のビルドが失敗します。コード生成の詳しい使い方は [development-guide.md](development-guide.md) の「コード生成（build_runner）」を参照してください。
+本プロジェクトは、状態管理（Riverpod）やデータクラス（freezed）のコードの一部を、手で書かずに `build_runner` で生成しています。生成されたファイルは Git の管理対象外のため、clone した直後は存在せず、そのままでは手順 5 のビルドが失敗します。コード生成の詳しい使い方は [development-guide.md](../development-guide.md) の「コード生成（build_runner）」を参照してください。
 
 **開発中にコードを変更した場合**
 
@@ -355,7 +355,7 @@ HTTPS の暗号化が必要なのは、ブラウザから nginx までの通信�
 
 `docker compose up -d` で起動した直後の開発用 DB には、テーブルが 1 つもありません。API は起動時にマイグレーションを適用しないため、ユーザー一覧やログインのように DB を使う画面は、このままではエラーになります。そこで、手順書 2 でインストールした `migrate` コマンドで、`backend/migrations/` のマイグレーションを適用してテーブルを作ります。
 
-テスト用 DB（`<POSTGRES_DB>_test`）には、`docker compose up -d` のたびに自動で適用されます（手順 7 の解説を参照）。自動で適用されるのはテスト用 DB だけで、開発用 DB にはこの手順のように `migrate` コマンドで適用します。マイグレーションの作り方や戻し方は [development-guide.md](development-guide.md) の「4. DB マイグレーション」を参照してください。
+テスト用 DB（`<POSTGRES_DB>_test`）には、`docker compose up -d` のたびに自動で適用されます（手順 7 の解説を参照）。自動で適用されるのはテスト用 DB だけで、開発用 DB にはこの手順のように `migrate` コマンドで適用します。マイグレーションの作り方や戻し方は [development-guide.md](../development-guide.md) の「4. DB マイグレーション」を参照してください。
 
 **`set -a; source .env; set +a` は何をしているのか**
 
@@ -373,7 +373,7 @@ HTTPS の暗号化が必要なのは、ブラウザから nginx までの通信�
 
 **確認に `docker compose exec` を使う理由**
 
-`docker compose exec db ...` は、起動中の `db` コンテナの中でコマンドを実行します。コンテナの中には `.env` の値が環境変数として渡されているため、Mac のターミナルで `.env` を読み込んでいなくても確認できます。`schema_migrations` は、`migrate` が適用済みのマイグレーションの番号を記録するテーブルです。`dirty` が `t` の場合は適用に失敗した状態で、[development-guide.md](development-guide.md) の「失敗したときの復旧手順」に従って復旧します。
+`docker compose exec db ...` は、起動中の `db` コンテナの中でコマンドを実行します。コンテナの中には `.env` の値が環境変数として渡されているため、Mac のターミナルで `.env` を読み込んでいなくても確認できます。`schema_migrations` は、`migrate` が適用済みのマイグレーションの番号を記録するテーブルです。`dirty` が `t` の場合は適用に失敗した状態で、[development-guide.md](../development-guide.md) の「失敗したときの復旧手順」に従って復旧します。
 
 ### 補足 ─ よくあるエラーと対処
 

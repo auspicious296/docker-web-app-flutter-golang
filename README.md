@@ -28,11 +28,11 @@ Flutter（フロントエンド）と GO（バックエンド API）を連携さ
 
 1〜4 は互いに依存しないため、順不同で実施して構いません。5 はアプリを起動して表示を確認するため、必ず 1〜4 の完了後に実施してください。
 
-1. [docker-setup-guide-for-mac.md](docs/docker-setup-guide-for-mac.md) — Homebrew と、Colima を利用した Docker / Docker Compose のインストール手順（Docker Desktop は使用しません）。
-2. [golang-setup-guide-for-mac.md](docs/golang-setup-guide-for-mac.md) — Go のインストール手順。
-3. [flutter-setup-guide-for-mac.md](docs/flutter-setup-guide-for-mac.md) — FVM および Flutter SDK のインストール手順。
-4. [local-https-setup-guide-for-mac.md](docs/local-https-setup-guide-for-mac.md) — ローカル HTTPS 用の証明書の作成と、カスタムドメイン（`myapp.local`）を `/etc/hosts` に登録する手順。
-5. [app-launch-guide-for-mac.md](docs/app-launch-guide-for-mac.md) — `.env` の作成、フロントエンドのビルド、コンテナの起動を行い、ブラウザで `https://myapp.local` のアプリの画面を表示するまでの手順。
+1. [docker-setup-guide-for-mac.md](docs/setup/docker-setup-guide-for-mac.md) — Homebrew と、Colima を利用した Docker / Docker Compose のインストール手順（Docker Desktop は使用しません）。
+2. [golang-setup-guide-for-mac.md](docs/setup/golang-setup-guide-for-mac.md) — Go のインストール手順。
+3. [flutter-setup-guide-for-mac.md](docs/setup/flutter-setup-guide-for-mac.md) — FVM および Flutter SDK のインストール手順。
+4. [local-https-setup-guide-for-mac.md](docs/setup/local-https-setup-guide-for-mac.md) — ローカル HTTPS 用の証明書の作成と、カスタムドメイン（`myapp.local`）を `/etc/hosts` に登録する手順。
+5. [app-launch-guide-for-mac.md](docs/setup/app-launch-guide-for-mac.md) — `.env` の作成、フロントエンドのビルド、コンテナの起動を行い、ブラウザで `https://myapp.local` のアプリの画面を表示するまでの手順。
 
 ### 設計判断の記録
 
@@ -114,6 +114,7 @@ docker-web-app-flutter-golang/
 │   │   └── certs/                #   mkcert で作成した証明書（Git 管理外）
 │   └── postgre-sql+admin/
 ├── docs/                         # セットアップ手順などのドキュメント
+│   ├── setup/                    #   開発環境のセットアップ手順書（macOS 向け）
 │   └── etc/                      #   開発中の進捗やメモ（Git 管理外）
 ├── frontend/                     # Flutter アプリ（フロントエンド）
 ├── backend/                      # Go アプリ（バックエンド API）
