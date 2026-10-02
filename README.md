@@ -186,3 +186,7 @@ backend/
 ```
 
 ローカルでのビルド成果物は `go build -o ./bin/api ./cmd/api` により `backend/bin/` へ出力します。コンテナ内では `golang` イメージ上でビルドした実行ファイルを、最終ステージの軽量イメージ（alpine / scratch）へ `COPY` します。
+
+## 5. ライセンス
+
+このプロジェクトは MIT License のもとで公開しています。詳しくは [LICENSE](LICENSE) をご覧ください。
